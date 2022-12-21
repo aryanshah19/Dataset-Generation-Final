@@ -227,24 +227,24 @@ class DatasetGeneration:
 if __name__ == '__main__':
 
 
-    ## Reading the configuration data
-    configdata = read_config("config.yaml")
-
-    ## Creating a class object
-    newtest = DatasetGeneration(configdata)
-    #newtest.printvariables()
-
-    ## Generating the dataset
-    newtest.generate_images(number_of_images=20)
+    # ## Reading the configuration data
+    # configdata = read_config("config.yaml")
+    #
+    # ## Creating a class object
+    # newtest = DatasetGeneration(configdata)
+    # #newtest.printvariables()
+    #
+    # ## Generating the dataset
+    # newtest.generate_images(number_of_images=20)
 
     ## Augmenting the photos
     #newtest.augment_images()
 
     # Plotting the images to test
-    # file = "im0056_15_bori_T"
-    # imagepath = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/testimages/" + file + ".png"
-    # test_anno = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/testannotations/" + file + ".txt"
-    # plot_image(imagepath, test_anno)
+    file = "im0058_30_cent_T"
+    imagepath = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/testimages/" + file + ".png"
+    test_anno = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/testannotations/" + file + ".txt"
+    plot_image(imagepath, test_anno)
 
 
 
