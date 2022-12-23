@@ -51,6 +51,7 @@ class DatasetGeneration:
         self.color = data["color"]
         self.augmented_output_folder = data["augmented_output_folder"]
         self.background = data["background"]
+        self.augmented_annotations_folder = data["augmented_annotations_folder"]
 
     def printvariables(self):
         print(
@@ -163,17 +164,16 @@ class DatasetGeneration:
 
 
     def augment_images(self,
+                       transformation,
                        PROJECT_PATH = None,
                        image_input_folder = None,
-                       image_output_folder = None,
-                       transformation = None,
-                       color=None
+                       image_output_folder = None
                        ):
         PROJECT_PATH = self.PROJECT_PATH
         image_input_folder = self.image_output_folder
         image_output_folder = self.augmented_output_folder
-        transformation = self.transformation
-        color = self.color
+        #transformation = self.transformation
+        #color = self.color
 
         """
            Augment images with noise, blur, sharpening and contrasting
@@ -199,7 +199,7 @@ class DatasetGeneration:
                 print("Augmenting", filepath[:6],"by introducing", transformation+".")
 
                 if transformation == "noise":
-                    output_path = image_output_path + "/" + str(transformation) + "_" + str(filepath)
+                    output_path = image_output_path + "/" + str(transformation[0:4]) + "_" + str(filepath)
                     inject_noise(image_path, output_path)
 
                 if transformation == "color":
@@ -223,28 +223,74 @@ class DatasetGeneration:
                     blur_image(image_path, output_path)
         print("Image Augmentation Complete!")
 
+    def augment_dataset(self):
+        annotations_input = self.PROJECT_PATH + self.annotations_output_folder + "/"
+        annotations_output = self.PROJECT_PATH + self.augmented_annotations_folder + "/"
+        transformations = self.transformation
+
+        for transformation in transformations:
+            dir_list = sorted(os.listdir(annotations_input))
+
+            for file in dir_list:
+                if len(file)>10:
+                    annotationspath = annotations_input + file
+                    annotationsoutputpath = annotations_output + str(transformation[0:4]) + "_" + file
+
+                    f = open(annotationspath, "r")
+                    x_cord = []
+                    y_cord = []
+                    flag = []
+                    for x in f:
+                        coordinates = x.split(" ")
+                        x_cord.append(coordinates[0])
+                        y_cord.append(coordinates[1])
+                        flag.append(coordinates[2])
+
+                    for j in range(len(x_cord)):
+                        x_cord[j] = int(x_cord[j].split(".")[0])
+                        y_cord[j] = int(y_cord[j].split(".")[0])
+
+                    x_ = []
+                    y_ = []
+                    for k in range(len(x_cord)):
+                        x_.append(x_cord[k])
+                        y_.append(y_cord[k])
+
+                    final = ""
+                    for z in range(18):
+                        final = final + str(x_[z]) + " " + str(y_[z]) + " " + str(flag[z])
+
+                    with open(annotationsoutputpath, 'w') as f:
+                        f.write(final)
+
+            DatasetGeneration.augment_images(self,transformation)
+
+
+
 
 if __name__ == '__main__':
 
 
-    # ## Reading the configuration data
-    # configdata = read_config("config.yaml")
-    #
-    # ## Creating a class object
-    # newtest = DatasetGeneration(configdata)
-    # #newtest.printvariables()
-    #
-    # ## Generating the dataset
-    # newtest.generate_images(number_of_images=20)
+    ## Reading the configuration data
+    configdata = read_config("config.yaml")
 
-    ## Augmenting the photos
-    #newtest.augment_images()
+    ## Creating a class object
+    newtest = DatasetGeneration(configdata)
+    #newtest.printvariables()
+
+    ## Generating the dataset
+    # newtest.generate_images(number_of_images=20)
+    
+    # # Augmenting the photos
+    # newtest.augment_images()
 
     # Plotting the images to test
-    file = "im0058_30_cent_T"
-    imagepath = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/testimages/" + file + ".png"
-    test_anno = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/testannotations/" + file + ".txt"
+    file = "nois_im0057_15_cent_T"
+    imagepath = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/augmented_images/" + file + ".png"
+    test_anno = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/augmented_annotations/" + file + ".txt"
     plot_image(imagepath, test_anno)
+
+    #newtest.augment_dataset()
 
 
 

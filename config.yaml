@@ -7,8 +7,9 @@ parameters:
   - positionlist: ["centre"]
   - fliplist: ["True"]
   - angle_boundaries: [0,45]
-  - transformation: "sharpness"
-  - color: "yellow"
+  - transformation: ["sharpness","noise", "brightness"]
+  - color: ["yellow","red"]
   - augmented_output_folder: "augmented_images"
+  - augmented_annotations_folder : "augmented_annotations"
   - background: "/Users/aryan/Desktop/Dataset Generation/Backgrounds/ray-mallick-5J1bHRX1fNw-unsplash.jpg"
   

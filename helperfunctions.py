@@ -4,7 +4,7 @@ import math
 import random
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-import wand
+from wand.image import Image as WI
 import cv2
 
 def compute_diagonal(w,h):
@@ -238,7 +238,7 @@ def rename_files(PROJECT_PATH,
         os.rename(old_path, new_path)
 
 def inject_noise(filename, dest):
-    with wand.image.Image(filename=filename) as img:
+    with WI(filename=filename) as img:
         img.noise("poisson", attenuate=0.99)
         img.save(filename=dest)
 
