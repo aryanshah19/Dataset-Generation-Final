@@ -90,13 +90,16 @@ class DatasetGeneration:
         fliplist = self.fliplist
         angle_boundaries = self.angle_boundaries
         background = self.background
-        number_of_images = 5
+        image_input_path = PROJECT_PATH + image_input_folder
+
+        number_of_images = len(os.listdir(image_input_path))
         countangle = 0
         counttest = 0
         for i in range(angle_boundaries[0],angle_boundaries[1]):
             if i%15 == 0:
                 countangle = countangle + 1
-        totalimages = number_of_images * len(positionlist) * len(fliplist) * countangle
+
+        totalimages = (number_of_images-1) * len(positionlist) * len(fliplist) * countangle
         """
            Generate augmented images
 
@@ -122,19 +125,18 @@ class DatasetGeneration:
                                "bottomright": "bori",
                                "random": "rand"}
         print("Generating", totalimages, "images.....!\n\n")
-        image_input_path = PROJECT_PATH + image_input_folder
 
-        q = 0
+        # q = 0
         for filepath in sorted(os.listdir(image_input_path)):
 
-            if q != number_of_images:
+            # if q != number_of_images:
 
 
                 foreground = image_input_path + "/" + str(filepath)
                 old_annotations_path = PROJECT_PATH + str(annotations_input_folder) + "/" + filepath[-10:-4] + ".txt"
 
                 if filepath[-4:] == ".png":
-                    q = q + 1
+                    # q = q + 1
                     for angle in range(angle_boundaries[0], angle_boundaries[1], 15):
                         for position in positionlist:
                             for flip in fliplist:
@@ -272,22 +274,22 @@ if __name__ == '__main__':
 
 
     ## Reading the configuration data
-    configdata = read_config("config.yaml")
+    # configdata = read_config("config.yaml")
+    #
+    # ## Creating a class object
+    # newtest = DatasetGeneration(configdata)
+    # #newtest.printvariables()
+    #
+    # ## Generating the dataset
+    # newtest.generate_images()
 
-    ## Creating a class object
-    newtest = DatasetGeneration(configdata)
-    #newtest.printvariables()
-
-    ## Generating the dataset
-    # newtest.generate_images(number_of_images=20)
-    
     # # Augmenting the photos
-    # newtest.augment_images()
+    #newtest.augment_images()
 
     # Plotting the images to test
-    file = "nois_im0057_15_cent_T"
-    imagepath = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/augmented_images/" + file + ".png"
-    test_anno = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/augmented_annotations/" + file + ".txt"
+    file = "im0056_30_cent_T"
+    imagepath = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/testimages/" + file + ".png"
+    test_anno = "/Users/aryan/Desktop/fd_dataset_creation/Yolov5/testannotations/" + file + ".txt"
     plot_image(imagepath, test_anno)
 
     #newtest.augment_dataset()
